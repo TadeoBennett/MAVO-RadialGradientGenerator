@@ -1,0 +1,208 @@
+<!--CMPS3141-HCI - AS2-22S1
+Collaborators:
+Date: Sept.10.22
+ -->
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<link rel="stylesheet" href="https://get.mavo.io/mavo.css" />
+		<link rel="stylesheet" href="style.css" />
+		<script src="https://get.mavo.io/mavo.js"></script>
+		<title>Repeating Radial Gradient Generator</title>
+		<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+	</head>
+	<body>
+		<div mv-app="mavoTest"  mv-storage="local" mv-mode="edit"  mv-bar="none" class="container">
+			<header><h1>Repeating Radial Gradient Generator</h1></header>
+			<h2>Instructions</h2>
+			<p>The format of a repeating radial gradient is <strong>background-image: repeating-radial-gradient(shape size at position, start-color, ..., last-color);</strong></p>
+			<p>Using the above syntax as a guide, you can create your own gradient. Select a shape from the first select box, a size from the second select box and the position type from the third. If <u>precision</u> is selected you can choose, via a radio button, what type(pixel or percent) you would like to use to position the origin of your gradient. There are two values needed for this. If <u>general</u> is selected, you can use the select box to see and choose an option of where to position your gradient. The position type currently being used is highlighted with a lightgreen color. The other is highlighted in a lightred.</p>
+			<p>Click on the labeled button to add a new color. The '#' is provided in the textbox for every color added to allow for hexcode. You may use color names as well, just simply delete the '#' before placing the color name in the textbox.</p>
+			<p>To get rid of the <strong >px/%? </strong> in the code below, simply select the radio button option to use pixels or percent. Use the slider/range input to edit the number of pixels/percent This will need to be done for any new color added.</p>
+			<hr>
+			<p>Need help <u>finding colors</u>  in hexcode format? <a href="https://coolors.co/">Visit coolors.co</a></p>
+
+
+			<p>Here are some basic gradient examples that you can replicate to get started:</p>
+			<ul>
+				<li>background: repeating-radial-gradient(#e66465, #9198e5 20%);</li>
+				<li>background: repeating-radial-gradient(closest-side, #3f87a6, #ebf8e1, #f69d3c);</li>
+				<li>background: repeating-radial-gradient(black, #000000 5px, white 5px, white 10px);</li>
+				<li>background: repeating-radial-gradient(circle farthest-corner at 20% 20%, red 5%, green 10%);</li>
+				<li>background: repeating-radial-gradient(circle , lightblue 28%, blue 34%, crimson 48% );</li>
+			</ul>
+
+			<!-- <code>background: repeating-radial-gradient(<span property="code">[size]  [hexcolor & ' ' & if(percentvalue == 0, '', percentvalue & '%')]</span>);</code> -->
+			<p>
+				Your Gradient CSS: 
+				<code id="code">background: repeating-radial-gradient(<span property="code">[shape]
+					
+					[if(size == '' and position_type == '', ',', '')]
+					
+					[size] 
+					
+					[if(position_type == '', '', 
+					if(position_type == "general", gpos, 
+					if(position_type == "precision", ' at ' & 
+						if(precision_type1 == "precision_pixelsradio1", precision_pixelvalue1 & 'px', 
+							if(precision_type1 == "precision_percentradio1", precision_percentvalue1 & '%',
+						'px/%?')) & ' ' &
+						if(precision_type2 == "precision_pixelsradio2", precision_pixelvalue2 & 'px', 
+							if(precision_type2 == "precision_percentradio2", precision_percentvalue2 & '%',
+						'px/%?')) & ','
+						,
+					'position_type not precision')))] 
+						
+					[hexcolor & ' ' & 
+						if(amount_type == "pixelsradio", 
+							if(pixelsvalue == 0, '', pixelsvalue & 'px'),
+						if(amount_type == "percentradio",
+							if(percentvalue == 0, '',
+							percentvalue & '%'),
+						'px/%?') ) ]
+				</span>);</code>
+				<button onclick="myFunction()">Copy text</button>
+			</p>
+			<!-- <code>background: repeating-radial-gradient(<span property="code">[size]  [hexcolor & ' ' &  if(amount_type == "percentradio", 'percent selected', 'pixels selected')]</span>);</code> -->
+
+			<!-- 
+			if(percentvalue == 0, '', percentvalue & '%')
+			if(pixelsvalue == 0, '', pixelsvalue & 'px')
+		 	-->
+
+			<!-- 
+			<p>[if(amount_type == "pixelsradio", 'pixels selected', '')]</p>
+			<p>[if(amount_type == "percentradio", 'percent selected', '')]</p>
+		 	-->
+
+			<hr/>
+			<section class="extra-section">
+				<label>
+					Shape
+					<select name="shapes" property="shape" class="classic">
+						<option value="" selected>none</option>
+						<option value="ellipse ">ellipse</option>
+						<option value="circle ">circle</option>
+					</select>
+				</label>
+				<label style="padding-left: 15px;">
+					Size: 
+					<select name="sizes" property="size" class="classic">
+						<option value="" selected>none</option>
+						<option value="farthest-corner ">farthest-corner</option>
+						<option value="closest-side ">closest-side</option>
+						<option value="closest-corner ">closes-corner</option>
+						<option value="farthest-side ">farthest-side</option>
+					</select>
+				</label>
+				<label  style="padding-left: 15px;">
+					Position-Type: 
+					<select name="position-types" id="position-types" property="position_type" class="classic">
+						<option value="" selected>none</option>
+						<option value="precision" id="pixels-percent-positioning">Precision</option>
+						<option value="general" id="general-positioning">General</option>
+					</select>
+				</label>
+				<br><br>
+
+				
+				<div class="secretGroup d-flex">
+					<div id="pixel-percent-group" style="[if(position_type == 'precision', 'background-color: rgb(215, 255, 215)', if(position_type == 'general', 'background-color: rgb(255, 219, 219);', ''))]">
+						<strong>Precision</strong>
+						<div class="d-flex">
+							<div class="input1  input">
+								<p>Value1</p>
+								<label>
+									<input type="radio" name="precision_amount1[$index]" value="precision_pixelsradio1" property="precision_type1" /> Pixels  &nbsp;
+									<input type="range" value="20" min="0" max="100" property="precision_pixelvalue1"  title="[precision_pixelvalue1] pixels" >
+								</label>
+								<br>
+								<label>
+									<input type="radio" name="precision_amount1[$index]" value="precision_percentradio1"/> Percent
+									<input type="range" value="20" min="0" max="100" property="precision_percentvalue1" title="[precision_percentvalue1]%">
+								</label>
+							</div>
+							<div class="input2 input">
+								<p>Value2</p>
+								<label>
+									<input type="radio" name="precision_amount2[$index]" value="precision_pixelsradio2"  property="precision_type2" /> Pixels  &nbsp;
+									<input type="range" value="20" min="0" max="100" property="precision_pixelvalue2" title="[precision_pixelvalue2] pixels" >
+								</label>
+								<br>
+								<label>
+									<input type="radio" name="precision_amount2[$index]" value="precision_percentradio2" /> Percent
+									<input type="range" value="20" min="0" max="100" property="precision_percentvalue2" title="[precision_percentvalue2]%">
+								</label>
+							</div>
+						</div>
+					</div>
+					<div id="general-positioning-group" style="[if(position_type == 'general', 'background-color: rgb(215, 255, 215)', if(position_type == 'precision', 'background-color: rgb(255, 219, 219);', ''))]">
+						<strong>General</strong>
+						<br>
+						<select name="general-position" id="general-position" property="gpos" class="classic">
+							<option value="" selected>none</option>
+							<option value="at top, ">top</option>
+							<option value="at top left, ">top left</option>
+							<option value="at top right, ">top right</option>
+							<option value="at bottom, ">bottom</option>
+							<option value="at bottom left, ">bottom left</option>
+							<option value="at bottom right, ">bottom right</option>
+							<option value="at center center, ">center center</option>
+							<option value="at center left, ">center left</option>
+							<option value="at center right, ">center right</option>
+						</select>
+					</div>
+				</div>
+			</section>
+			<div class="demo-section d-flex row">
+				<section class="colors-section col-lg-6">
+					<ul class="color-list d-flex row" mv-list>
+						<li property="newColor" mv-list-item class="mv-add-newColor left-gray-border bottom-gray-border ">
+							<label>
+								Color
+								<input type="text" value="[join('#', hexcolor)]" property="hexcolor" placeholder="Hex Value/Color Name"/> 
+							</label>
+							<div>
+								<label>
+									<input type="radio" name="amount[$index]" value="pixelsradio" property="amount_type"/> Pixels
+									<input type="range" value="20" min="0" max="100" property="pixelsvalue" title="[pixelsvalue] pixels" >
+								</label>
+								<br>
+								<label>
+									<input type="radio" name="amount[$index]" value="percentradio"/> Percent
+									<input type="range" value="20" min="0" max="100" property="percentvalue" title="[percentvalue]%">
+								</label>
+							</div>
+						</li>
+					</ul>
+				</section>
+
+				<section class="preview-section col-lg-6">
+					<div style="background: repeating-radial-gradient([code]);">
+					<!-- <div style="background: repeating-radial-gradient(#e66465 , #9198e5 20%);"> -->
+						<!-- background: repeating-radial-gradient(closest-side, #3f87a6, #ebf8e1, #f69d3c); -->
+						<!-- background-image: repeating-radial-gradient(shape size at position, start-color, ..., last-color); -->
+						<!-- background: repeating-radial-gradient(circle farthest-corner at 20% 20%, red 0 5%, green 5% 10%); -->
+						<!-- background: repeating-radial-gradient(circle , lightblue 28%, blue 34%, crimson 48% ); -->
+					</div>
+				</section>
+			</div>
+		</div>
+		<script>
+			
+			//function gotten from https://www.w3schools.com/howto/howto_js_copy_clipboard.asp
+			function myFunction() {
+				var text = document.getElementById("code").innerText;
+				navigator.clipboard.writeText(text)
+				Swal.fire({
+					icon: 'success',
+					title: 'Your css is copied',
+					showConfirmButton: false,
+					timer: 1000
+				})
+			}
+		</script>
+	</body>
+</html>
